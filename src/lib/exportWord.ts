@@ -48,8 +48,8 @@ function p(text: string, bold = false): Paragraph {
 
 function bullet(text: string): Paragraph {
   return new Paragraph({
-    children: [new TextRun({ text, size: 24, font: "Times New Roman" })],
-    bullet: { level: 0 },
+    children: [new TextRun({ text: `• ${text}`, size: 24, font: "Times New Roman" })],
+    indent: { left: 360 },
     spacing: { after: 80 },
   });
 }
