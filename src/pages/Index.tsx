@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { exportToWord } from "@/lib/exportWord";
 import SectionCard from "@/components/SectionCard";
 import CalendarTable from "@/components/CalendarTable";
 import { shifts, calendarData, eventTypeLabels, squadIcons } from "@/data/programData";
@@ -45,6 +46,13 @@ const Index = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => exportToWord()}
+              className="flex items-center gap-2 bg-white hover:bg-gray-100 text-doc-navy font-golos font-semibold text-sm px-4 py-2 rounded-lg transition-colors print:hidden border border-white/30"
+            >
+              <Icon name="FileDown" size={16} />
+              <span className="hidden sm:inline">Word</span>
+            </button>
             <button
               onClick={handlePrint}
               className="flex items-center gap-2 bg-doc-gold hover:bg-yellow-500 text-doc-navy font-golos font-semibold text-sm px-4 py-2 rounded-lg transition-colors print:hidden"
