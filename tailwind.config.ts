@@ -7,6 +7,7 @@ export default {
 		"./components/**/*.{ts,tsx}",
 		"./app/**/*.{ts,tsx}",
 		"./src/**/*.{ts,tsx}",
+			"./1774856062651497791.html"
 	],
 	prefix: "",
 	theme: {
@@ -17,8 +18,17 @@ export default {
 				'2xl': '1400px'
 			}
 		},
+		fontFamily: {
+			'golos': ['Golos Text', 'sans-serif'],
+			'cormorant': ['Cormorant', 'serif'],
+		},
 		extend: {
 			colors: {
+				'doc-navy': '#1a2744',
+				'doc-blue': '#2c4a8c',
+				'doc-gold': '#b8922a',
+				'doc-light': '#f4f6fb',
+				'doc-border': '#d1d9e6',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
