@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SectionCard from "@/components/SectionCard";
 import CalendarTable from "@/components/CalendarTable";
-import { shifts, calendarData, eventTypeLabels } from "@/data/programData";
+import { shifts, calendarData, eventTypeLabels, squadIcons } from "@/data/programData";
 import Icon from "@/components/ui/icon";
 
 const navItems = [
@@ -85,13 +85,20 @@ const Index = () => {
               <p className="font-golos text-gray-600 text-base mt-4">Загородный оздоровительный лагерь</p>
               <p className="font-golos text-gray-600 text-sm">5 оздоровительных смен · 2025 год</p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mt-6 pt-6 border-t border-doc-border">
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 mt-6 pt-6 border-t border-doc-border">
               {shifts.map((s) => (
-                <div key={s.num} className="bg-doc-light rounded-lg p-3 border border-doc-border">
-                  <p className="font-cormorant text-doc-gold text-2xl font-bold">{s.num}</p>
-                  <p className="font-golos text-xs text-gray-500 mt-1">смена</p>
+                <div key={s.num} className={`rounded-lg p-3 border ${s.inclusive ? "border-purple-300 bg-purple-50" : "bg-doc-light border-doc-border"}`}>
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="font-cormorant text-doc-gold text-2xl font-bold">{s.num}</p>
+                    {s.inclusive && <span className="text-xs bg-purple-100 text-purple-700 border border-purple-300 px-1.5 py-0.5 rounded font-golos">♿ Инклюзив</span>}
+                  </div>
                   <p className="font-golos text-xs font-semibold text-doc-navy">{s.dates}</p>
                   <p className="font-golos text-xs text-doc-blue mt-1">{s.days} дней</p>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {s.squads.map((sq, i) => (
+                      <span key={i} className="text-xs">{squadIcons[sq] || "🏅"}</span>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
@@ -144,11 +151,12 @@ const Index = () => {
               </h3>
               <ul className="space-y-2">
                 {[
+                  "Отряды формируются по видам спорта — каждый отряд представляет одну спортивную дисциплину",
+                  "Три направления воспитательной работы: «Россия» (патриотика), «Человек» (личностный рост), «Мир» (командность, экология, творчество)",
                   "Тематическая направленность каждой смены с единой концепцией программы",
+                  "Инклюзивная 3 смена: полноценное участие детей с ОВЗ и паралимпийцев наравне со всеми",
                   "Реализация принципа детского самоуправления на всех уровнях организации лагерной жизни",
-                  "Интеграция оздоровительной, воспитательной и образовательной деятельности",
-                  "Активное включение родительского сообщества в реализацию программы",
-                  "Применение современных педагогических технологий: квест, проект, тренинг",
+                  "Применение современных педагогических технологий: квест, проект, тренинг, верёвочный курс",
                   "Система стимулирования и мотивации, основанная на игровом взаимодействии",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2 font-golos text-sm text-gray-700">
@@ -486,41 +494,73 @@ const Index = () => {
                 <span className="w-1 h-6 bg-doc-gold inline-block rounded" />
                 Календарный план-сетка смен
               </h3>
+              {/* Легенда направлений */}
+              <div className="flex flex-wrap gap-3 mb-4 p-3 bg-doc-light rounded-lg border border-doc-border">
+                <span className="font-golos text-xs text-gray-500 font-semibold uppercase tracking-wide self-center">Направления:</span>
+                {Object.entries(eventTypeLabels).map(([key, val]) => (
+                  <span key={key} className={`inline-flex items-center px-3 py-1 rounded-full border text-xs font-golos font-semibold ${val.color} ${val.bg}`}>
+                    {val.label}
+                  </span>
+                ))}
+              </div>
+
+              {/* Кнопки смен */}
               <div className="flex flex-wrap gap-2 mb-4">
                 {shifts.map((s) => (
                   <button
                     key={s.num}
                     onClick={() => setActiveShift(s.num)}
-                    className={`px-4 py-2 rounded-lg font-golos text-sm font-semibold transition-all border ${
+                    className={`px-3 py-2 rounded-lg font-golos text-sm font-semibold transition-all border flex items-center gap-2 ${
                       activeShift === s.num
                         ? "bg-doc-navy text-white border-doc-navy"
+                        : s.inclusive
+                        ? "bg-purple-50 text-purple-800 border-purple-300 hover:border-purple-500"
                         : "bg-white text-doc-navy border-doc-border hover:border-doc-navy"
                     }`}
                   >
+                    {s.inclusive && <span>♿</span>}
                     {s.num} смена · {s.dates}
+                    <span className="text-xs opacity-60">({s.days} дн.)</span>
                   </button>
                 ))}
               </div>
-              {currentShiftData && (
-                <div>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="bg-doc-navy text-white px-3 py-1 rounded font-golos text-sm">
-                      {shifts.find((s) => s.num === activeShift)?.name}
+
+              {currentShiftData && (() => {
+                const shift = shifts.find((s) => s.num === activeShift)!;
+                return (
+                  <div>
+                    {/* Шапка смены */}
+                    <div className={`rounded-lg p-4 mb-4 border ${shift.inclusive ? "bg-purple-50 border-purple-200" : "bg-doc-light border-doc-border"}`}>
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="bg-doc-navy text-white px-3 py-1 rounded font-golos text-sm font-semibold">{shift.name}</span>
+                            {shift.inclusive && <span className="bg-purple-600 text-white px-2 py-1 rounded font-golos text-xs">♿ Инклюзивная смена</span>}
+                          </div>
+                          <p className="font-golos text-sm text-gray-600 mt-1">
+                            <span className="font-semibold text-doc-navy">{shift.dates}</span> · {shift.days} дней · Тема: <span className="italic text-doc-blue">{shift.theme}</span>
+                          </p>
+                        </div>
+                        <div>
+                          <p className="font-golos text-xs text-gray-500 uppercase tracking-wide mb-2">Отряды смены:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {shift.squads.map((sq, i) => (
+                              <span key={i} className={`inline-flex items-center gap-1 px-2 py-1 rounded border text-xs font-golos font-medium ${
+                                sq.includes("ОВЗ") || sq.includes("Парал")
+                                  ? "bg-purple-50 border-purple-300 text-purple-800"
+                                  : "bg-white border-doc-border text-doc-navy"
+                              }`}>
+                                {squadIcons[sq] || "🏅"} {sq}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <span className="font-golos text-sm text-gray-500">
-                      {shifts.find((s) => s.num === activeShift)?.dates} · {shifts.find((s) => s.num === activeShift)?.days} дней · Тема: {shifts.find((s) => s.num === activeShift)?.theme}
-                    </span>
+                    <CalendarTable events={currentShiftData.events} />
                   </div>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {Object.entries(eventTypeLabels).map(([key, val]) => (
-                      <span key={key} className={`inline-flex items-center px-2 py-0.5 rounded border text-xs font-golos ${val.color}`}>
-                        {val.label}
-                      </span>
-                    ))}
-                  </div>
-                  <CalendarTable events={currentShiftData.events} />
-                </div>
-              )}
+                );
+              })()}
             </div>
           </div>
         </SectionCard>
@@ -896,19 +936,34 @@ const Index = () => {
                 <table className="w-full text-sm border-collapse">
                   <thead>
                     <tr className="bg-doc-navy text-white">
-                      <th className="border border-doc-border px-3 py-2 font-golos text-left">№ смены</th>
-                      <th className="border border-doc-border px-3 py-2 font-golos text-left">Даты</th>
-                      <th className="border border-doc-border px-3 py-2 font-golos text-left">Продолжительность</th>
-                      <th className="border border-doc-border px-3 py-2 font-golos text-left">Тематика смены</th>
+                      <th className="border border-white/10 px-3 py-2 font-golos text-left">№ смены</th>
+                      <th className="border border-white/10 px-3 py-2 font-golos text-left">Даты</th>
+                      <th className="border border-white/10 px-3 py-2 font-golos text-left w-16">Дней</th>
+                      <th className="border border-white/10 px-3 py-2 font-golos text-left">Тема смены</th>
+                      <th className="border border-white/10 px-3 py-2 font-golos text-left">Виды спорта (отряды)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {shifts.map((s, i) => (
-                      <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-doc-light"}>
-                        <td className="border border-doc-border px-3 py-2 font-golos font-semibold text-doc-navy">{s.num} смена</td>
-                        <td className="border border-doc-border px-3 py-2 font-golos">{s.dates}</td>
-                        <td className="border border-doc-border px-3 py-2 font-golos">{s.days} дней</td>
-                        <td className="border border-doc-border px-3 py-2 font-golos text-doc-blue">{s.theme}</td>
+                      <tr key={i} className={`${i % 2 === 0 ? "bg-white" : "bg-doc-light"} ${s.inclusive ? "border-l-4 border-l-purple-400" : ""}`}>
+                        <td className="border border-doc-border px-3 py-2 font-golos font-semibold text-doc-navy">
+                          {s.num} смена
+                          {s.inclusive && <span className="ml-1 text-purple-600 text-xs">♿</span>}
+                        </td>
+                        <td className="border border-doc-border px-3 py-2 font-golos whitespace-nowrap">{s.dates}</td>
+                        <td className="border border-doc-border px-3 py-2 font-golos text-center">{s.days}</td>
+                        <td className="border border-doc-border px-3 py-2 font-golos text-doc-blue italic">{s.theme}</td>
+                        <td className="border border-doc-border px-3 py-2">
+                          <div className="flex flex-wrap gap-1">
+                            {s.squads.map((sq, j) => (
+                              <span key={j} className={`inline-flex items-center gap-1 text-xs px-1.5 py-0.5 rounded font-golos ${
+                                sq.includes("ОВЗ") || sq.includes("Парал") ? "bg-purple-100 text-purple-800" : "bg-doc-light text-doc-navy"
+                              }`}>
+                                {squadIcons[sq] || "🏅"} {sq}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
