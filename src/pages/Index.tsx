@@ -28,6 +28,8 @@ const Index = () => {
 
   const currentShiftData = calendarData.find((s) => s.shiftNum === activeShift);
 
+  const handlePrint = () => window.print();
+
   return (
     <div className="min-h-screen bg-doc-light font-golos">
       {/* Шапка */}
@@ -42,13 +44,22 @@ const Index = () => {
               <p className="text-white text-sm font-bold leading-tight">«В единстве наша сила»</p>
             </div>
           </div>
-          <button
-            onClick={() => setNavOpen(!navOpen)}
-            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors text-sm"
-          >
-            <Icon name="Menu" size={20} />
-            <span className="hidden sm:inline">Разделы</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handlePrint}
+              className="flex items-center gap-2 bg-doc-gold hover:bg-yellow-500 text-doc-navy font-golos font-semibold text-sm px-4 py-2 rounded-lg transition-colors print:hidden"
+            >
+              <Icon name="Printer" size={16} />
+              <span className="hidden sm:inline">Печать / PDF</span>
+            </button>
+            <button
+              onClick={() => setNavOpen(!navOpen)}
+              className="flex items-center gap-2 text-white/80 hover:text-white transition-colors text-sm print:hidden"
+            >
+              <Icon name="Menu" size={20} />
+              <span className="hidden sm:inline">Разделы</span>
+            </button>
+          </div>
         </div>
         {navOpen && (
           <div className="border-t border-white/10 bg-doc-navy">
