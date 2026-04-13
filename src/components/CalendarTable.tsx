@@ -6,6 +6,7 @@ interface Event {
   event: string;
   type: string;
   responsible: string;
+  modules?: string;
 }
 
 interface CalendarTableProps {
@@ -21,6 +22,7 @@ const CalendarTable = ({ events }: CalendarTableProps) => (
           <th className="border border-white/10 px-3 py-2 text-left font-golos font-semibold w-20">Дата</th>
           <th className="border border-white/10 px-3 py-2 text-left font-golos font-semibold">Мероприятие</th>
           <th className="border border-white/10 px-3 py-2 text-left font-golos font-semibold w-28">Направление</th>
+          <th className="border border-white/10 px-3 py-2 text-left font-golos font-semibold w-56">Модули</th>
           <th className="border border-white/10 px-3 py-2 text-left font-golos font-semibold w-52">Ответственный</th>
         </tr>
       </thead>
@@ -43,6 +45,15 @@ const CalendarTable = ({ events }: CalendarTableProps) => (
                 <span className={`inline-flex items-center px-2 py-1 rounded border text-xs font-golos font-semibold ${typeInfo.color} ${typeInfo.bg}`}>
                   {typeInfo.label}
                 </span>
+              </td>
+              <td className="border border-doc-border px-3 py-2 font-golos text-xs leading-relaxed">
+                {ev.modules ? (
+                  <div className="space-y-0.5">
+                    {ev.modules.split(";").map((m, i) => (
+                      <div key={i} className={`text-xs ${m.trim().startsWith("И:") ? "text-doc-navy font-medium" : "text-doc-blue"}`}>{m.trim()}</div>
+                    ))}
+                  </div>
+                ) : <span className="text-gray-400">—</span>}
               </td>
               <td className="border border-doc-border px-3 py-2 font-golos text-gray-600 text-xs leading-relaxed">{ev.responsible}</td>
             </tr>
