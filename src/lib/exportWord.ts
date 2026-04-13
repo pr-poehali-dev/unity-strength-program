@@ -112,6 +112,7 @@ function calendarTable(shiftNum: number): Table {
       cell("Дата", true),
       cell("Мероприятие", true),
       cell("Направление", true),
+      cell("Модули (И — инвариантные, В — вариативные)", true),
       cell("Ответственный", true),
     ],
     tableHeader: true,
@@ -128,12 +129,14 @@ function calendarTable(shiftNum: number): Table {
         : ev.type === "chelovek"
         ? "Человек"
         : "Мир";
+    const modulesText = (ev as { modules?: string }).modules ?? "—";
     return new TableRow({
       children: [
         cell(String(ev.day), false, rowFill),
         cell(ev.date, false, rowFill),
         cell(ev.event, false, rowFill),
         cell(typeInfo?.label ?? dirLabel, false, dirFill),
+        cell(modulesText, false, rowFill),
         cell(ev.responsible, false, rowFill),
       ],
     });
@@ -142,7 +145,7 @@ function calendarTable(shiftNum: number): Table {
   return new Table({
     layout: TableLayoutType.FIXED,
     width: { size: 100, type: WidthType.PERCENTAGE },
-    columnWidths: [700, 800, 4600, 1500, 2400],
+    columnWidths: [500, 700, 3200, 1100, 2500, 2000],
     rows: [headerRow, ...rows],
   });
 }
