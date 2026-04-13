@@ -13,7 +13,7 @@ import {
   PageBreak,
 } from "docx";
 import { saveAs } from "file-saver";
-import { shifts, calendarData, eventTypeLabels } from "@/data/programData";
+import { shifts, calendarData, eventTypeLabels, type CalendarEvent } from "@/data/programData";
 
 const NAVY = "1A2744";
 const LIGHT = "F4F6FB";
@@ -129,7 +129,7 @@ function calendarTable(shiftNum: number): Table {
         : ev.type === "chelovek"
         ? "Человек"
         : "Мир";
-    const modulesText = (ev as { modules?: string }).modules ?? "—";
+    const modulesText: string = (ev as CalendarEvent).modules ?? "—";
     return new TableRow({
       children: [
         cell(String(ev.day), false, rowFill),

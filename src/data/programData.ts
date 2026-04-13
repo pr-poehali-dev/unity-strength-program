@@ -1,3 +1,12 @@
+export type CalendarEvent = {
+  date: string;
+  day: number;
+  event: string;
+  type: string;
+  responsible: string;
+  modules?: string;
+};
+
 export const shifts = [
   {
     num: 1,
